@@ -1,186 +1,156 @@
 ﻿using System;
 
-namespace Labs2
+namespace Исправа
 {
     class Program
     {
+        private static bool IsCorrectCoordinate(string coord)
+        {
+            char letter = coord[0];
+            char num = coord[1];
+            return coord.Length == 2 && letter >= 'A' && letter <= 'H' && num >= '1' && num <= '8';
+        }
+        private static string ReadCoord()
+        {
+            do
+
+            {
+                string input = Console.ReadLine().ToUpper();
+                if (IsCorrectCoordinate(input))
+                    return input;
+                else
+                    Console.WriteLine("Координата не корректна!");
+            }
+            while (true);
+        }
+
+        enum FigureType
+        {
+            pawn, rook, knight, bishop, queen, king
+        }
+
+        private static FigureType ReadFigureType()
+        {
+            do
+            {
+                string input = Console.ReadLine();
+                switch (input)
+                {
+
+                    case ("0"):
+                    case ("pawn"):
+                        return FigureType.pawn;
+
+                    case ("1"):
+                    case ("rook"):
+                        return FigureType.rook;
+
+                    case ("2"):
+                    case ("knight"):
+                        return FigureType.knight;
+
+                    case ("3"):
+                    case ("bishop"):
+                        return FigureType.bishop;
+
+                    case ("4"):
+                    case ("queen"):
+                        return FigureType.queen;
+
+                    case ("5"):
+                    case ("king"):
+                        return FigureType.king;
+
+                    default:
+                        Console.WriteLine("Тип фигуры не корректен!");
+                        break;
+                }
+            } while (true);
+        }
+
+        private static bool IsKnightCorrect(string start, string end)
+        {
+            int dx = Math.Abs(end[0] - start[0]);
+            int dy = Math.Abs(end[1] - start[1]);
+
+            return dx + dy == 3 && dx * dy == 2;
+        }
+
+        private static bool IsPawnCorrect(string start, string end)
+        {
+
+            return (end[0] - start[0] == 0 && end[1] - start[1] == 1);
+        }
+
+        private static bool IsRookCorrect(string start, string end)
+        {
+
+            return (end[0] == start[0] && end[1] != start[1] || end[0] != start[0] && end[1] == start[1]);
+        }
+
+        private static bool IsBishopCorrect(string start, string end)
+        {
+
+            return (Math.Abs(start[0] - end[0]) == Math.Abs(start[1] - end[1]));
+        }
+
+        private static bool IsQueenCorrect(string start, string end)
+        {
+
+            return (Math.Abs(start[0] - end[0]) == Math.Abs(start[1] - end[1]) || end[0] == start[0] && end[1] != start[1] || end[0] != start[0] && end[1] == start[1]);
+        }
+
+        private static bool IsKingCorrect(string start, string end)
+        {
+
+            return (Math.Abs(start[0] - end[0]) <= 1 && Math.Abs(start[1] - end[1]) <= 1);
+        }
+
+
+
         static void Main(string[] args)
         {
-            Console.WriteLine("Это программа определяет правильность хода той или иной фигуры в настольной игре 'Шахматы' !");
-            Console.WriteLine("Сначала выберете фигуру которую вы хотите 1-пешка, 2-ладья, 3-конь, 4-слон, 5-ферзь, 6-король  "); // 1-пешка, 2-ладья, 3-конь, 4-слон, 5-ферзь, 6-король
-            int figure = int.Parse(Console.ReadLine());
-            if (figure > 6 || figure <= 0)
-            {
-                Console.WriteLine("Такой фигуры нет");
-                return;
-            }
-            Console.WriteLine($"Номер вашей фигур {figure}");
+            Console.Write("Введите тип фигуры (0-pawn, 1-rook, 2-knight, 3-bishop, 4-queen, 5-king):");
+            FigureType figure = ReadFigureType();
 
-            Console.WriteLine("Теперь введите координаты местоположения фигуры");
+            Console.Write("Введите стартовую координату: ");
+            string start = ReadCoord();
 
-             Console.WriteLine("Введите  координаты фигуры по длине от A до H");
-             string Place = Console.ReadLine();
-             int PlaceX;
-             switch (Place)
-             {
-                case "A":
-                    PlaceX = 1;
-                    break;
-                case "B":
-                    PlaceX = 2;
-                    break;
-                case "C":
-                    PlaceX = 3;
-                    break;
-                case "D":
-                    PlaceX = 4;
-                    break;
-                case "E":
-                    PlaceX = 5;
-                    break;
-                case "F":
-                    PlaceX = 6;
-                    break;
-                case "G":
-                    PlaceX = 7;
-                    break;
-                case "H":
-                    PlaceX = 8;
-                    break;
-                default:
-                    Console.WriteLine("Вы ввели некорректные координаты");
-                    return;
+            Console.Write("Введите конечную координату: ");
+            string end = ReadCoord();
 
-            }
-
-            Console.WriteLine("Введите её координаты фигуры по ширине от 1 до 8");
-            int PlaceY = int.Parse(Console.ReadLine());
-            if (PlaceY > 8 || PlaceY <= 0)
-            {
-                Console.WriteLine("Вы ввели некорректные координаты");
-                return;
-            }
-            Console.WriteLine($"Отлично, координаты вашей фигуры составляют {Place}{PlaceY}");
-
-
-
-            Console.WriteLine("Выберете координаты куда вы хотите сделать ход");
-            Console.WriteLine("Введите  координаты фигуры по длине от A до H");
-            string Move = Console.ReadLine();
-            int MoveX;
-            switch (Move)
-            {
-                case "A":
-                    MoveX = 1;
-                    break;
-                case "B":
-                    MoveX = 2;
-                    break;
-                case "C":
-                    MoveX = 3;
-                    break;
-                case "D":
-                    MoveX = 4;
-                    break;
-                case "E":
-                    MoveX = 5;
-                    break;
-                case "F":
-                    MoveX = 6;
-                    break;
-                case "G":
-                    MoveX = 7;
-                    break;
-                case "H":
-                    MoveX = 8;
-                    break;
-                default:
-                    Console.WriteLine("Вы ввели некорректные координаты");
-                    return;
-
-            }
-
-
-
-            Console.WriteLine("Введите её координаты фигуры по ширине от 1 до 8");
-            int MoveY = int.Parse(Console.ReadLine());
-            if (MoveY > 8 || MoveY <= 0)
-            {
-                Console.WriteLine("Вы ввели некорректные координаты");
-                return;
-            }
-
-            Console.WriteLine($"Координаты вашего хода составляют {Move}{MoveY}");
-
-        
-
-
+            bool isCorrect = false;
             switch (figure)
             {
-                case 1:
-                    {
-                        if (PlaceX == MoveX && MoveY == PlaceY + 1)
-                        {
-                            Console.WriteLine("Фигура успешно совершила ход");
-                        }
-                        else
-                        {
-                            Console.WriteLine("Фигуре не удалось совершить ход");
-                        }
-                    }
+                case FigureType.knight:
+                    isCorrect = IsKnightCorrect(start, end);
                     break;
-                case 2:
-                    if (PlaceX == MoveX & PlaceY != MoveY || PlaceX != MoveX & PlaceY == MoveY)
-                    {
-                        Console.WriteLine("Фигура успешно совершила ход");
-                    }
-                    else
-                    {
-                        Console.WriteLine("Фигуре не удалось совершить ход");
-                    }
+
+                case FigureType.pawn:
+                    isCorrect = IsPawnCorrect(start, end);
                     break;
-                case 3:
-                    if (2 == Math.Abs(PlaceX - MoveX) && 1 == Math.Abs(PlaceY - MoveY) || 1 == Math.Abs(PlaceX - MoveX) && 2 == Math.Abs(PlaceY - MoveY))
-                    {
-                        Console.WriteLine("Фигура успешно совершила ход");
-                    }
-                    else
-                    {
-                        Console.WriteLine("Фигуре не удалось совершить ход");
-                    }
+
+                case FigureType.rook:
+                    isCorrect = IsRookCorrect(start, end);
                     break;
-                case 4:
-                    if (Math.Abs(PlaceX - MoveX) == Math.Abs(PlaceY - MoveY))
-                    {
-                        Console.WriteLine("Фигура успешно совершила ход");
-                    }
-                    else
-                    {
-                        Console.WriteLine("Фигуре не удалось совершить ход");
-                    }
+
+                case FigureType.queen:
+                    isCorrect = IsQueenCorrect(start, end);
                     break;
-                case 5:
-                    if (Math.Abs(PlaceX - MoveX) == Math.Abs(PlaceY - MoveY) || PlaceX == MoveX & PlaceY != MoveY || PlaceX != MoveX & PlaceY == MoveY)
-                    {
-                        Console.WriteLine("Фигура успешно совершила ход");
-                    }
-                    else
-                    {
-                        Console.WriteLine("Фигуре не удалось совершить ход");
-                    }
+
+                case FigureType.king:
+                    isCorrect = IsKingCorrect(start, end);
                     break;
-                case 6:
-                    if (1 == Math.Abs(PlaceX - MoveX) && 1 == Math.Abs(PlaceY - MoveY) || 0 == Math.Abs(PlaceX - MoveX) && 1 == Math.Abs(PlaceY - MoveY) || 1 == Math.Abs(PlaceX - MoveX) && 0 == Math.Abs(PlaceY - MoveY))
-                    {
-                        Console.WriteLine("Фигура успешно совершила ход");
-                    }
-                    else
-                    {
-                        Console.WriteLine("Фигуре не удалось совершить ход");
-                    }
+
+                case FigureType.bishop:
+                    isCorrect = IsBishopCorrect(start, end);
                     break;
-                 
             }
+
+            if (isCorrect)
+                Console.WriteLine("Ваша фигура ходит правильно.");
+            else
+                Console.WriteLine("Такой ход не возможен для данной фигуры.");
         }
     }
 }
